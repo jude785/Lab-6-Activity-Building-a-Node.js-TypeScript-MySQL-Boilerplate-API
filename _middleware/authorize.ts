@@ -1,4 +1,4 @@
-import jwt from 'express-jwt';
+import { expressjwt } from 'express-jwt';
 import config from '../config.json';
 import db from '../_helpers/db';
 
@@ -10,7 +10,7 @@ export default function authorize(roles: any = []) {
     }
 
     return [
-        jwt({ secret, algorithms: ['HS256'] }),
+        expressjwt({ secret, algorithms: ['HS256'] }),
         async (req: any, res: any, next: any) => {
             const account = await db.Account.findByPk(req.user.id);
 

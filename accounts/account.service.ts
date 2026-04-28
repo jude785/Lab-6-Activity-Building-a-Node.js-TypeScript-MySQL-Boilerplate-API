@@ -195,43 +195,32 @@ async function hash(password: any) {
     return await bcrypt.hash(password, 10);
 }
 
-async function update(id: any, params: any) {
-    const account = await getAccount(id);
-
-    if (params.email && account.email !== params.email && await db.Account.findOne({ where: { email: params.email } })) {
-        throw 'Email "' + params.email + '" is already taken';
-    }
-
-    if (params.password) {
-        params.passwordHash = await hash(params.password);
-    }
-
-    Object.assign(account, params);
-    account.updated = Date.now();
-    await account.save();
-
-    return basicDetails(account);
+function generateJwtToken(account: any) {
+    const token = jwt.sign(
+        { sub: account.id, id: account.id },
+        config.secret,
+        { expiresIn: '15m' }
+    );
+    return token;
 }
 
-async function _delete(id: any) {
-    const account = await getAccount(id);
-    await account.destroy();
-}
-
-async function getAccount(id: any) {
-    const account = await db.Account.findByPk(id);
-    if (!account) throw 'Account not found';
-    return account;
-}
-
-async function getRefreshToken(token: any) {
-    const refreshToken = await db.RefreshToken.findOne({ where: { token } });
-    if (!refreshToken || !refreshToken.isActive) throw 'Invalid token';
+function generateRefreshToken(account: any, ipAddress: string) {
+    const refreshToken = new db.RefreshToken({
+        accountId: account.id,
+        token: randomTokenString(),
+        expires: new Date(Date.now() + 7*24*60*60*1000),
+        createdByIp: ipAddress
+    });
     return refreshToken;
 }
 
-async function hash(password: any) {
-    return await bcrypt.hash(password, 10);
+function basicDetails(account: any) {
+    const { id, title, firstName, lastName, email, role, createdAt, updatedAt, isVerified } = account;
+    return { id, title, firstName, lastName, email, role, createdAt, updatedAt, isVerified };
+}
+
+function randomTokenString() {
+    return crypto.randomBytes(40).toString('hex');
 }
 
 async function sendVerificationEmail(account: any, origin: any) {
