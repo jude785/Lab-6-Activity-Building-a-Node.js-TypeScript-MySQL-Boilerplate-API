@@ -8,6 +8,7 @@ A fully-featured RESTful authentication API built with Node.js, TypeScript, and 
 
 ## 🔗 Related Repository
 - **Frontend (Angular 21)**: https://github.com/jude785/Lab-7-Activity-Angular-21-Auth-Boilerplate---Sign-Up-with-Verification-Login-and-Forgot-Password
+- **Live Frontend URL**: https://ipt-2026-frontend-zrjq.onrender.com
 
 ## ✨ Features
 - User registration with email verification
