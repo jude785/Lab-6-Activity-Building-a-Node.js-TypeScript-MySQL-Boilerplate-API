@@ -1,4 +1,11 @@
-import config from '../config';
+function loadFileConfig() {
+    try {
+        return require('../config.json');
+    } catch (e) {
+        return {};
+    }
+}
+const fileConfig: any = process.env.NODE_ENV === 'production' ? {} : loadFileConfig();
 import mysql from 'mysql2/promise';
 import { Sequelize } from 'sequelize';
 import accountModel from '../accounts/account.model';
@@ -10,7 +17,7 @@ export default db;
 initialize();
 
 async function initialize() {
-    const databaseConfig = config.database;
+    const databaseConfig = fileConfig.database || {};
     const host = process.env.DB_HOST || databaseConfig.host;
     const port = process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : (databaseConfig.port || 3306);
     const user = process.env.DB_USER || databaseConfig.user;

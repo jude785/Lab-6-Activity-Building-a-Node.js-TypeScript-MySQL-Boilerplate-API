@@ -1,4 +1,11 @@
-import config from '../config';
+function loadFileConfig() {
+    try {
+        return require('../config.json');
+    } catch (e) {
+        return {};
+    }
+}
+const fileConfig: any = process.env.NODE_ENV === 'production' ? {} : loadFileConfig();
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
@@ -89,13 +96,7 @@ async function register(params: any, origin: any) {
     console.log(`Verification Token: ${account.verificationToken}`);
     console.log(`---------------------------\n`);
 
-    try {
-        sendVerificationEmail(account, origin).catch((err: any) => {
-            console.error('Failed to send verification email (Render free tier blocks SMTP port 587):', err.message);
-        });
-    } catch (err: any) {
-        console.error('Failed to send verification email:', err.message);
-    }
+    await sendVerificationEmail(account, origin);
 }
 
 async function verifyEmail({ token }: any) {
@@ -210,7 +211,7 @@ function getJwtSecret() {
     if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
         throw new Error('JWT_SECRET environment variable is required in production');
     }
-    const secret = process.env.JWT_SECRET || config.secret;
+    const secret = process.env.JWT_SECRET || fileConfig.secret;
     if (!secret) throw new Error('JWT secret is missing');
     return secret;
 }
