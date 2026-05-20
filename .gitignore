@@ -1,13 +1,14 @@
-```
 # Dependencies
 node_modules/
+
+# Build output
+dist/
 
 # Logs
 *.log
 
-# Environment
+# Environment & Secrets
 .env
 .env.local
 *.env.*
 config.json
-```
