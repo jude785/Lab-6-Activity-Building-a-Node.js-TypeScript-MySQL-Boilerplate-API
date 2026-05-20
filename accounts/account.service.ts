@@ -84,7 +84,18 @@ async function register(params: any, origin: any) {
 
     await account.save();
 
-    await sendVerificationEmail(account, origin);
+    console.log(`\n--- NEW USER REGISTERED ---`);
+    console.log(`Email: ${account.email}`);
+    console.log(`Verification Token: ${account.verificationToken}`);
+    console.log(`---------------------------\n`);
+
+    try {
+        sendVerificationEmail(account, origin).catch((err: any) => {
+            console.error('Failed to send verification email (Render free tier blocks SMTP port 587):', err.message);
+        });
+    } catch (err: any) {
+        console.error('Failed to send verification email:', err.message);
+    }
 }
 
 async function verifyEmail({ token }: any) {
