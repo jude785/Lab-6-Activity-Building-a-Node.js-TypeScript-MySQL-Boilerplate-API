@@ -195,10 +195,19 @@ async function hash(password: any) {
     return await bcrypt.hash(password, 10);
 }
 
+function getJwtSecret() {
+    if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET environment variable is required in production');
+    }
+    const secret = process.env.JWT_SECRET || config.secret;
+    if (!secret) throw new Error('JWT secret is missing');
+    return secret;
+}
+
 function generateJwtToken(account: any) {
     const token = jwt.sign(
         { sub: account.id, id: account.id },
-        config.secret,
+        getJwtSecret(),
         { expiresIn: '15m' }
     );
     return token;

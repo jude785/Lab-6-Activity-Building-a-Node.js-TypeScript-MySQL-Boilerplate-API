@@ -4,6 +4,10 @@ import db from '../_helpers/db';
 
 const { secret } = config;
 
+if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is required in production');
+}
+
 export default function authorize(roles: any = []) {
     if (typeof roles === 'string') {
         roles = [roles];
