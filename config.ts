@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 let localConfig: any = {};
 try {
   localConfig = require('./config.json');
