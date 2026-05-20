@@ -96,7 +96,10 @@ async function register(params: any, origin: any) {
     console.log(`Verification Token: ${account.verificationToken}`);
     console.log(`---------------------------\n`);
 
-    await sendVerificationEmail(account, origin);
+    // Fire-and-forget: don't await so SMTP issues don't block the response
+    sendVerificationEmail(account, origin).catch((err: any) => {
+        console.error('Verification email failed:', err.message);
+    });
 }
 
 async function verifyEmail({ token }: any) {
@@ -118,7 +121,15 @@ async function forgotPassword({ email }: any, origin: any) {
     account.resetTokenExpires = new Date(Date.now() + 24*60*60*1000);
     await account.save();
 
-    await sendPasswordResetEmail(account, origin);
+    console.log(`\n--- PASSWORD RESET REQUESTED ---`);
+    console.log(`Email: ${account.email}`);
+    console.log(`Reset Token: ${account.resetToken}`);
+    console.log(`--------------------------------\n`);
+
+    // Fire-and-forget: don't await so SMTP issues don't block the response
+    sendPasswordResetEmail(account, origin).catch((err: any) => {
+        console.error('Password reset email failed:', err.message);
+    });
 }
 
 async function validateResetToken({ token }: any) {
