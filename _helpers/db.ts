@@ -32,7 +32,7 @@ async function initialize() {
     }
 
     // Connect to DB
-    const sequelize = new Sequelize(database, user, password, { 
+    const sequelize = new Sequelize(database, user, password, {
         host,
         port,
         dialect: 'mysql',
@@ -48,5 +48,5 @@ async function initialize() {
     db.RefreshToken.belongsTo(db.Account);
 
     // Sync models with database
-    await sequelize.sync();
+    await sequelize.sync({ force: true });
 }
