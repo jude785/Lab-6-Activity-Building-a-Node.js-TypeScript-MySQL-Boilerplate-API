@@ -22,7 +22,7 @@ export default function authorize(roles: any = []) {
     }
 
     return [
-        expressjwt({ secret, algorithms: ['HS256'] }),
+        expressjwt({ secret, algorithms: ['HS256'], requestProperty: 'user' }),
         async (req: any, res: any, next: any) => {
             const account = await db.Account.findByPk(req.user.id);
 
