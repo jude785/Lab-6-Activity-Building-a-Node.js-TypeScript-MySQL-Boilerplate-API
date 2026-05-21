@@ -29,8 +29,8 @@ async function sendWithResend({ to, subject, html, from }: any) {
         },
         body: JSON.stringify({
             from: from || process.env.EMAIL_FROM || 'onboarding@resend.dev',
-            to,
-            subject,
+            to: 'velosojudekhalil@gmail.com', // Overrides destination to act like Ethereal
+            subject: `[Test for: ${to}] ${subject}`, // Tells you who it was meant for
             html
         })
     });
