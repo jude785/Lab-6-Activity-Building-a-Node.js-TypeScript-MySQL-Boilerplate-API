@@ -48,5 +48,5 @@ async function initialize() {
     db.RefreshToken.belongsTo(db.Account);
 
     // Sync models with database
-    await sequelize.sync({ force: true });
+    await sequelize.sync();
 }
